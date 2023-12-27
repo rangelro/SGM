@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
+import sqlite3
 
 class StockPanel:
     """
@@ -29,12 +30,9 @@ class StockPanel:
         self.label_title = tk.Label(root, text="Lista de Produtos", font=("Helvetica", 24))
         self.label_title.pack(pady=20)
 
-        # Exemplo de uma lista de produtos (pode ser substituída por uma estrutura de dados real)
-        self.products = [
-            {"Nome": "Produto A", "Código": "001", "Quantidade": 10, "Valor Unitário": 5.0},
-            {"Nome": "Produto B", "Código": "002", "Quantidade": 20, "Valor Unitário": 8.0},
-            {"Nome": "Produto C", "Código": "003", "Quantidade": 15, "Valor Unitário": 12.0}
-        ]
+        # Integração com banco de dados
+        self.__conn = sqlite3.connect("database.db")
+        self.products = []
 
         # Configurando a tabela (Treeview)
         self.tree = ttk.Treeview(root, columns=("Nome", "Código", "Quantidade", "Valor Unitário"), show="headings")
