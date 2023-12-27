@@ -4,3 +4,4 @@ Arquivo de log criado!
 12/27/2023 | 19:12:19 - teste: Adicionado novo usu�rio(Teste2) ao banco de dados.
 12/27/2023 | 19:23:17 - teste: Adicionado novo usu�rio(Teste2) ao banco de dados.
 12/27/2023 | 20:10:09 - Teste: Adicionado novo usu�rio(Teste,<class 'type'>) ao banco de dados
+asdasd
