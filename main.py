@@ -1,5 +1,7 @@
-from data.admin import Admin
+from ui.login import LoginPanel
+import tkinter as tk
 
-teste= Admin("teste")
-
-print(teste.add_user("Teste2", "Senha", str(type(Admin))))
+if __name__ == "__main__":
+    root_login = tk.Tk()
+    tela_login = LoginPanel(root_login)
+    root_login.mainloop()

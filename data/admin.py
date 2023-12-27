@@ -12,11 +12,12 @@ class Admin(User, LogMixin):
         
         # Caso não exista a tabela "Users", criar uma nova
         query = '''CREATE TABLE IF NOT EXISTS Users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT NOT NULL,
-                    password TEXT NOT NULL,
-                    user_type TEXT NOT NULL
-                );'''
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        username TEXT NOT NULL,
+                        password TEXT NOT NULL,
+                        user_type TEXT NOT NULL,
+                        is_active INTEGER DEFAULT 1 CHECK (is_active IN (0, 1))
+                    );'''
                 
         self.__cursor.execute(query)
         self.__connection.commit()
