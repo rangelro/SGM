@@ -14,12 +14,13 @@ class StockPanel:
         button_remove (Button): Botão para remover um produto.
     """
 
-    def __init__(self, root):
+    def __init__(self, root, user):
         """
         Inicializa o painel de estoque.
 
         Parâmetros:
             root (Tk): A janela principal da aplicação.
+            user (Stockist): Usuário que irá operar o estoque.
         """
         self.root = root
         self.root.title("Painel de Estoque")

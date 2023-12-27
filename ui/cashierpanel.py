@@ -15,12 +15,13 @@ class CashierPanel:
         button_cancel_purchase (Button): Botão para cancelar a compra.
     """
 
-    def __init__(self, root):
+    def __init__(self, root, user):
         """
         Inicializa o sistema de caixa.
 
         Parâmetros:
             root (Tk): A janela principal da aplicação.
+            user (Cashier): Usuário que irá operar o sistema de caixa
         """
         self.root = root
         self.root.title("Sistema de Caixa")

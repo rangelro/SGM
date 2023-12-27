@@ -20,7 +20,11 @@ class AdminPanel:
 
         Parâmetros:
             root (Tk): A janela principal da aplicação.
+            user (User): Usuário que irá operar o gerenciamento de usuários.
         """
+        # Determinar usuário que irá operar o sistema
+        self.__user = user
+        
         self.root = root
         self.root.title("Admin Panel")
         self.root.geometry("800x600")
@@ -28,8 +32,9 @@ class AdminPanel:
         self.label_title = tk.Label(root, text="Lista de Usuários", font=("Helvetica", 24))
         self.label_title.pack(pady=20)
 
-        # Exemplo de uma lista de usuários (pode ser substituída por uma estrutura de dados real)
-        self.lista_users = ["User 1", "User 2", "User 3"]
+        # Carregar usuários em uma lista para que seja exibido em sistema
+        self.lista_users = []
+        # TODO buscar a partir do usuário admin todos os usuários do sistema
 
         # Exibindo a lista de usuários
         self.listbox_users = tk.Listbox(root)
