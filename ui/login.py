@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import messagebox
-from adminpanel import AdminPanel
+from ui.adminpanel import AdminPanel
+from data.admin import Admin
+import sqlite3
 
-class TelaLogin:
+class LoginPanel:
     """
     Classe que representa a tela de login.
 
@@ -61,20 +63,24 @@ class TelaLogin:
         """
         user = self.entry_user.get()
         password = self.entry_password.get()
-
+        
+        # Connectar ao banco de dados para fazer o login
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+        
+        query = '''SELECT * FROM Users WHERE username = ? AND password = ? AND is_active = 1;'''
+        cursor.execute(query, (user, password))
+        result = cursor.fetchone()
+        conn.close() # Fechar conexão
+        
         # Lógica de validação do login
-        if user == "usuario" and password == "senha":
+        if result:
             messagebox.showinfo("Login", "Login bem-sucedido!")
             
             # Fechar janela de login e abrir janela do usuário
             self.root.destroy()
             new_root = tk.Tk()
-            admin_panel = AdminPanel(new_root)
+            admin_panel = AdminPanel(new_root, Admin(result[1]))
             new_root.mainloop()
         else:
             messagebox.showerror("Login", "Usuário ou senha incorretos.")
-            
-if __name__ == "__main__":
-    root_login = tk.Tk()
-    tela_login = TelaLogin(root_login)
-    root_login.mainloop()

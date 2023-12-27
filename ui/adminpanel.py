@@ -14,7 +14,7 @@ class AdminPanel:
         button_disable (Button): Botão para desativar um usuário.
     """
 
-    def __init__(self, root):
+    def __init__(self, root, user):
         """
         Inicializa o painel de administração.
 

@@ -1,2 +1,0 @@
-Arquivo de log criado!
-12/27/2023 | 18:48:45 - teste: Adicionado novo usuário(Teste) ao banco de dados.
