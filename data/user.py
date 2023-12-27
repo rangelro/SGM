@@ -20,7 +20,6 @@ class User:
         - username (str): O nome de usuário para o novo usuário.
         """
         self.__username = username
-
     
     # Metodos get's e set's
     def get_username(self):

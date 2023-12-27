@@ -6,7 +6,7 @@ class LogMixin:
     Classe para gerenciar logs de ações de usuários.
     """
 
-    def add(self, message):
+    def print_log(self, message):
         """
         Adiciona uma ação ao arquivo de log.
 
@@ -17,16 +17,16 @@ class LogMixin:
         """
         
         # Verifica se o arquivo existe, se não existir, cria o arquivo
-        if not os.path.exists(f'{self.username}.txt'):
-            with open(f'{self.username}.txt', 'w') as file:
+        if not os.path.exists(f'logs/{self.get_username()}.txt'):
+            with open(f'logs/{self.get_username()}.txt', 'w') as file:
                 file.write("Arquivo de log criado!\n")
         
         # Obtém a data e a hora no formato desejado
         timestamp = datetime.now().strftime("%m/%d/%Y | %H:%M:%S")
 
         # Formata a mensagem no formato especificado
-        log_message = f"{timestamp} - {self.username}: {message}\n"
+        log_message = f"{timestamp} - {self.get_username()}: {message}\n"
 
         # Adiciona a mensagem ao arquivo de log sem apagar os dados existentes
-        with open(f'{self.username}.txt', 'a') as file:
+        with open(f'logs/{self.get_username()}.txt', 'a') as file:
             file.write(log_message)
