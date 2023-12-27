@@ -3,3 +3,4 @@ Arquivo de log criado!
 12/27/2023 | 19:06:55 - teste: Adicionado novo usuário(Teste) ao banco de dados.
 12/27/2023 | 19:12:19 - teste: Adicionado novo usuário(Teste2) ao banco de dados.
 12/27/2023 | 19:23:17 - teste: Adicionado novo usuário(Teste2) ao banco de dados.
+12/27/2023 | 20:10:09 - Teste: Adicionado novo usuário(Teste,<class 'type'>) ao banco de dados.
