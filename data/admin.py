@@ -42,8 +42,10 @@ class Admin(User, LogMixin):
         result = self.__cursor.fetchone()
         return result[0] > 0
     
-    def edit_user(self, id, username, password, type):
-        # TODO implementar sistema de edição de usuário
+    def edit_user(self,id,username, password, user_type):
+        query = '''UPDATE Users SET username=?,password=?,user_type=? WHERE id=?'''
+        self.__cursor.execute(query,(username,password,user_type,id))
+        self.__connection.commit()
         
         # Adiciona ação ao log
         self.print_log(f"Usuário({id}) foi modificado.")
