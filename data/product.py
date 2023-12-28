@@ -10,7 +10,7 @@ class Product:
         amount (int): Quantidade do produto.
     """
 
-    def __init__(self, name, code, value, validity, amount):
+    def __init__(self, id, name, code, value, validity, amount):
         """
         Inicializa uma instância da classe Product.
 
@@ -21,6 +21,7 @@ class Product:
             validity (str): Data de validade do produto.
             amount (int): Quantidade do produto.
         """
+        self.__id = id
         self.__name = name
         self.__code = code
         self.__value = value
@@ -28,6 +29,8 @@ class Product:
         self.__amount = amount
         
     # Metodos gets e sets, não será necessário docstring
+    def get_id(self):
+        return self.__id
     
     def get_name(self):
         return self.__name

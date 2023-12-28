@@ -38,6 +38,9 @@ class StockPanel:
         self.__conn = sqlite3.connect("database.db")
         self.__cursor = self.__conn.cursor()
         
+        # Criar lista de produtos
+        self.__products = []
+        
         # Verificar se a tabela dos produtos existe, caso não criar uma nova
         query = '''CREATE TABLE IF NOT EXISTS Stock (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,9 +52,13 @@ class StockPanel:
                 );'''
         self.__cursor.execute(query)
         self.__conn.commit()
+        
+        # Carregar produtos na lista
+        self.update_list()
 
         # Configurando a tabela (Treeview)
-        self.__tree = ttk.Treeview(root, columns=("name", "code", "qt", "unit_value"), show="headings")
+        self.__tree = ttk.Treeview(root, columns=("id", "name", "code", "qt", "unit_value"), show="headings")
+        self.__tree.heading("id", text="ID")
         self.__tree.heading("name", text="Nome")
         self.__tree.heading("code", text="Código")
         self.__tree.heading("qt", text="Quantidade")
@@ -71,22 +78,33 @@ class StockPanel:
         self.__button_remove = tk.Button(root, text="Remover Produto", command=self.remove_product)
         self.__button_remove.pack(side=tk.LEFT, padx=20, pady=10)
 
-    def update_table(self):
-        """
-        Atualiza a tabela com os dados dos produtos.
-        """
+    def update_list(self):
         # Carregar tabela a partir do banco de dados
         query = '''SELECT * FROM Stock'''
         self.__cursor.execute(query)
         result = self.__cursor.fetchall()
         
+        # Limpar lista antes de adicionar novos valores
+        self.__products.clear()
+        
+        for p in result:
+            self.__products.append(Product(p[0], p[1], p[2], p[3], p[4], p[5]))
+
+    def update_table(self):
+        """
+        Atualiza a tabela com os dados dos produtos.
+        """
         # Limpando itens existentes na tabela
         for item in self.__tree.get_children():
             self.__tree.delete(item)
 
         # Preenchendo a tabela com os dados da lista de produtos
-        for product in result:
-            self.__tree.insert("", "end", values=(product[1], product[2], product[5], product[3]))
+        for product in self.__products:
+            self.__tree.insert("", "end", values=(product.get_id(), 
+                                                  product.get_name(), 
+                                                  product.get_code(), 
+                                                  product.get_amount(), 
+                                                  product.get_value()))
 
     def add_product(self):
         """
@@ -98,8 +116,9 @@ class StockPanel:
         value = simpledialog.askfloat("Adicionar Produto", "Digite o valor unitário do produto:", parent=self.__root)
         validity = simpledialog.askstring("Adicionar Produto", "Digite a validade, caso não tenha, deixe em branco: ", parent=self.__root)
 
-        new_product = Product(name, code, value, validity, quantity)
+        new_product = Product(0, name, code, value, validity, quantity)
         self.__user.add_product(self.__conn, new_product)
+        self.update_list()
         self.update_table()  # Atualiza a tabela após adicionar um novo produto
         messagebox.showinfo("Painel de Estoque", "Produto adicionado com sucesso!")
 
@@ -107,10 +126,38 @@ class StockPanel:
         """
         Edita o produto selecionado na tabela.
         """
-        # TODO Adicionar funcionalidade para edição de produto
+        selected_item = self.__tree.focus()
+        if selected_item:
+            # Obter ID do item selecionado
+            selected_id = self.__tree.item(selected_item, "values")
+            if selected_id:
+                p = self.find_product_byid(selected_id[0])
+                if p:
+                    # Caso o produto seja identificado, fazer as edições
+                    name = simpledialog.askstring("Editar produto", "Digite o nome do produto:", parent=self.__root, initialvalue=p.get_name())
+                    p.set_name(name)
+                    code = simpledialog.askstring("Editar produto", "Digite o codigo do produto:", parent=self.__root, initialvalue=p.get_code())
+                    p.set_code(code)
+                    value = simpledialog.askfloat("Editar produto", "Digite o valor do produto:", parent=self.__root, initialvalue=p.get_value())
+                    p.set_value(value)
+                    amount = simpledialog.askinteger("Editar produto", "Digite a quantidade do produto:", parent=self.__root, initialvalue=p.get_amount())
+                    p.set_amount(amount)
+                    validity = simpledialog.askstring("Editar produto", "Digite a validade do produto:", parent=self.__root, initialvalue=p.get_validity())
+                    p.set_validity(validity)
+                    
+                    # atualizar no banco de dados
+                    self.__user.edit_product(self.__conn, p)
+                    self.update_table() # Atualiza tabela
+        else:
+            messagebox.showerror("Painel de Estoque", "Nenhum item selecionado, por gentileza selecionar um item!")
 
     def remove_product(self):
         """
         Remove o produto selecionado na tabela.
         """
         # TODO Adicionar funcionalidade para remoção de produto do estoque
+        
+    def find_product_byid(self, id) -> Product:
+        for p in self.__products:
+            if id == str(p.get_id()):
+                return p

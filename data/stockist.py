@@ -12,3 +12,7 @@ class Stockist(User, LogMixin):
         
         # Adiciona ação ao log
         self.print_log(f"Adicionado novo produto({product.get_name()}) com código: {product.get_code()} ao estoque.")
+        
+    def edit_product(self, db, product):
+        # TODO Efetuar edição no banco de dados
+        pass
