@@ -3,8 +3,6 @@ from tkinter import messagebox, simpledialog
 from data.admin import Admin
 
 
-
-
 class AdminPanel:
     """
     Classe que representa o painel de administração (CRUD).
@@ -58,7 +56,8 @@ class AdminPanel:
 
         self.button_disable = tk.Button(root, text="Desativar Usuário", command=self.disable_user)
         self.button_disable.pack(side=tk.LEFT, padx=20, pady=10)
-     #Preencher lista de usuarios
+    
+    #Preencher lista de usuarios
     def update_users(self):
         result =self.__user.all_users()
         self.__lista_users.clear()
@@ -103,9 +102,7 @@ class AdminPanel:
             messagebox.showinfo("Editar Usuario", f"Usuário '{selected_user}' editado com sucesso.")
         else:
             messagebox.showwarning("Editar Usuario", "Usuario inválido.")
-
-        
-        
+    
 
     def disable_user(self):
         """
@@ -114,8 +111,8 @@ class AdminPanel:
         selected_index = self.__listbox_users.curselection()
         if selected_index:
             selected_user = self.__lista_users[selected_index[0]]
-            del self.__lista_users[selected_index[0]]
-            self.__listbox_users.delete(selected_index)
+            if self.__user.disable_user(id):
+                self.__listbox_users.insert(tk.CURRENT,f"{username} - desativado")
             messagebox.showinfo("Admin Panel", f"Usuário '{selected_user}' desativado com sucesso!")
         else:
             messagebox.showwarning("Admin Panel", "Selecione um usuário para desativar.")
@@ -127,3 +124,8 @@ class AdminPanel:
         selected_index = self.__listbox_users.curselection()
         if selected_index:
             selected_user = self.__lista_users[selected_index[0]]
+            del self.__lista_users[selected_index[0]]
+            self.__listbox_users.delete(selected_index)
+            messagebox.showinfo("Admin Panel", f"Usuário '{selected_user}'ativado com sucesso!")
+        else:
+            messagebox.showwarning("Admin Panel", "Selecione um usuário para ativar.")

@@ -116,7 +116,7 @@ class Admin(User, LogMixin):
         #Efetua um UPDATE no banco de dados desativando o usuário alterando a proriedade is_active
         query = '''UPDATE Users SET is_active=0 WHERE id=?'''
         self.__cursor.execute(query,(id))
-        self.__connection.commit()
+        self.__connection.commit() 
         
         # Adiciona ação ao log
         self.print_log(f"Usuário({id}) foi desativado.")

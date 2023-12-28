@@ -2,5 +2,5 @@ Arquivo de log criado!
 12/27/2023 | 21:23:58 - rangel: Adicionado novo usuário(rangel) ao banco de dados.
 12/27/2023 | 21:26:44 - rangel: Adicionado novo usuário(rangel2) ao banco de dados.
 12/28/2023 | 14:16:09 - rangel: Adicionado novo usuário(rangel) ao banco de dados.
-12/28/2023 | 20:08:58 - rangel: Adicionado novo produto(teste) com c�digo: 1234 ao estoque.
-12/28/2023 | 20:11:43 - rangel: Adicionado novo produto(Arroz) com c�digo: 54321 ao estoque.
+12/28/2023 | 19:23:08 - rangel: Adicionado novo usuário(rangel) ao banco de dados.
+12/28/2023 | 19:27:29 - rangel: Adicionado novo usuário(teste) ao banco de dados.
