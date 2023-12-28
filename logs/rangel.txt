@@ -1,0 +1,3 @@
+Arquivo de log criado!
+12/27/2023 | 21:23:58 - rangel: Adicionado novo usuário(rangel) ao banco de dados.
+12/27/2023 | 21:26:44 - rangel: Adicionado novo usuário(rangel2) ao banco de dados.
