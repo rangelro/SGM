@@ -1,5 +1,8 @@
 Arquivo de log criado!
-12/27/2023 | 18:55:38 - teste: Adicionado novo usuário(Teste) ao banco de dados.
-12/27/2023 | 19:06:55 - teste: Adicionado novo usuário(Teste) ao banco de dados.
-12/27/2023 | 19:12:19 - teste: Adicionado novo usuário(Teste2) ao banco de dados.
-12/27/2023 | 19:51:49 - teste: UsuÃ¡rio(1) foi modificado.
+12/27/2023 | 18:55:38 - teste: Adicionado novo usu�rio(Teste) ao banco de dados.
+12/27/2023 | 19:06:55 - teste: Adicionado novo usu�rio(Teste) ao banco de dados.
+12/27/2023 | 19:12:19 - teste: Adicionado novo usu�rio(Teste2) ao banco de dados.
+12/27/2023 | 19:23:17 - teste: Adicionado novo usu�rio(Teste2) ao banco de dados.
+12/27/2023 | 20:10:09 - Teste: Adicionado novo usu�rio(Teste,<class 'type'>) ao banco de dados
+asdasd12/27/2023 | 22:01:08 - Teste: Adicionado novo produto(teste) com c�digo: 1234 ao estoque.
+12/27/2023 | 22:01:45 - Teste: Adicionado novo produto(Arroz) com c�digo: 54321 ao estoque.

@@ -15,12 +15,13 @@ class CashierPanel:
         button_cancel_purchase (Button): Botão para cancelar a compra.
     """
 
-    def __init__(self, root):
+    def __init__(self, root, user):
         """
         Inicializa o sistema de caixa.
 
         Parâmetros:
             root (Tk): A janela principal da aplicação.
+            user (Cashier): Usuário que irá operar o sistema de caixa
         """
         self.root = root
         self.root.title("Sistema de Caixa")
@@ -28,9 +29,6 @@ class CashierPanel:
 
         self.label_title = tk.Label(root, text="Itens da Compra", font=("Helvetica", 24))
         self.label_title.pack(pady=20)
-
-        # Exemplo de uma lista de itens da compra (pode ser substituída por uma estrutura de dados real)
-        self.items = []
 
         # Configurando a tabela (Treeview)
         self.tree = ttk.Treeview(root, columns=("Nome", "Quantidade", "Valor Unitário", "Valor Total"), show="headings")
@@ -62,73 +60,31 @@ class CashierPanel:
             self.tree.delete(item)
 
         # Preenchendo a tabela com os dados da lista de itens da compra
-        for item in self.items:
-            self.tree.insert("", "end", values=(item["Nome"], item["Quantidade"], item["Valor Unitário"], item["Valor Total"]))
-
+        # TODO
+        
     def add_item(self):
         """
         Adiciona um novo item à compra.
         """
-        code = simpledialog.askstring("Adicionar Item", "Digite o código do produto:", parent=self.root)
-        # Simulando uma busca pelo código na lista de produtos (substitua isso pela lógica real)
-        product = self.find_product_by_code(code)
-
-        if product:
-            quantity = simpledialog.askinteger("Adicionar Item", f"Digite a quantidade para {product['Nome']}:", parent=self.root)
-
-            if quantity is not None and quantity > 0:
-                item_total = quantity * product["Valor Unitário"]
-                new_item = {
-                    "Nome": product["Nome"],
-                    "Quantidade": quantity,
-                    "Valor Unitário": product["Valor Unitário"],
-                    "Valor Total": item_total
-                }
-
-                self.items.append(new_item)
-                self.update_table()  # Atualiza a tabela após adicionar um novo item
-                messagebox.showinfo("Sistema de Caixa", f"Item {product['Nome']} adicionado com sucesso!")
-            else:
-                messagebox.showwarning("Sistema de Caixa", "Quantidade inválida.")
-        else:
-            messagebox.showwarning("Sistema de Caixa", "Produto não encontrado.")
+        # TODO
 
     def remove_item(self):
         """
         Remove o item selecionado da tabela.
         """
-        selected_item = self.tree.selection()
-        if selected_item:
-            selected_item_index = int(self.tree.index(selected_item))
-            del self.items[selected_item_index]
-            self.update_table()  # Atualiza a tabela após remover um item
-            messagebox.showinfo("Sistema de Caixa", "Item removido com sucesso!")
-        else:
-            messagebox.showwarning("Sistema de Caixa", "Selecione um item para remover.")
+        # TODO
 
     def finish_purchase(self):
         """
         Finaliza a compra e exibe um resumo.
         """
-        if self.items:
-            total_purchase_value = sum(item["Valor Total"] for item in self.items)
-            purchase_summary = f"Resumo da Compra:\nTotal: R$ {total_purchase_value:.2f}"
-
-            messagebox.showinfo("Sistema de Caixa - Compra Finalizada", purchase_summary)
-            self.items = []  # Limpa a lista de itens após finalizar a compra
-            self.update_table()  # Atualiza a tabela após finalizar a compra
-        else:
-            messagebox.showwarning("Sistema de Caixa", "A compra está vazia.")
+        # TODO
 
     def cancel_purchase(self):
         """
         Cancela a compra e limpa a lista de itens.
         """
-        confirmation = messagebox.askyesno("Sistema de Caixa", "Tem certeza que deseja cancelar a compra?")
-        if confirmation:
-            self.items = []  # Limpa a lista de itens ao cancelar a compra
-            self.update_table()  # Atualiza a tabela ao cancelar a compra
-            messagebox.showinfo("Sistema de Caixa", "Compra cancelada com sucesso.")
+        # TODO
 
     def find_product_by_code(self, code):
         """
@@ -140,11 +96,4 @@ class CashierPanel:
         Retorna:
             dict: Os detalhes do produto encontrado ou None se não encontrado.
         """
-        # Exemplo: substitua isso pela lógica real de busca por código
-        products = {
-            "001": {"Nome": "Produto A", "Valor Unitário": 5.0},
-            "002": {"Nome": "Produto B", "Valor Unitário": 8.0},
-            "003": {"Nome": "Produto C", "Valor Unitário": 12.0}
-        }
-
-        return products.get(code)
+        # TODO

@@ -21,10 +21,11 @@ class AdminPanel:
 
         Parâmetros:
             root (Tk): A janela principal da aplicação.
+            user (User): Usuário que irá operar o gerenciamento de usuários.
         """
         #Definindo variaveis de usuário
         self.__user = user
-
+        
         self.__root = root
         self.__root.title("Admin Panel")
         self.__root.geometry("800x600")
