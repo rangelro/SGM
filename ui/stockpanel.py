@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
+from data.product import Product
 import sqlite3
 
 class StockPanel:
@@ -23,61 +24,82 @@ class StockPanel:
             root (Tk): A janela principal da aplicação.
             user (Stockist): Usuário que irá operar o estoque.
         """
-        self.root = root
-        self.root.title("Painel de Estoque")
-        self.root.geometry("800x600")
+        # Definindo usuário operador do estoque
+        self.__user = user
+        
+        self.__root = root
+        self.__root.title("Painel de Estoque")
+        self.__root.geometry("800x600")
 
-        self.label_title = tk.Label(root, text="Lista de Produtos", font=("Helvetica", 24))
-        self.label_title.pack(pady=20)
+        self.__label_title = tk.Label(root, text="Lista de Produtos", font=("Helvetica", 24))
+        self.__label_title.pack(pady=20)
 
         # Integração com banco de dados
         self.__conn = sqlite3.connect("database.db")
-        self.products = []
+        self.__cursor = self.__conn.cursor()
+        
+        # Verificar se a tabela dos produtos existe, caso não criar uma nova
+        query = '''CREATE TABLE IF NOT EXISTS Stock (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    code TEXT NOT NULL,
+                    value REAL NOT NULL,
+                    validity TEXT NOT NULL,
+                    quantity INTEGER NOT NULL
+                );'''
+        self.__cursor.execute(query)
+        self.__conn.commit()
 
         # Configurando a tabela (Treeview)
-        self.tree = ttk.Treeview(root, columns=("Nome", "Código", "Quantidade", "Valor Unitário"), show="headings")
-        self.tree.heading("Nome", text="Nome")
-        self.tree.heading("Código", text="Código")
-        self.tree.heading("Quantidade", text="Quantidade")
-        self.tree.heading("Valor Unitário", text="Valor Unitário")
-        self.tree.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
+        self.__tree = ttk.Treeview(root, columns=("name", "code", "qt", "unit_value"), show="headings")
+        self.__tree.heading("name", text="Nome")
+        self.__tree.heading("code", text="Código")
+        self.__tree.heading("qt", text="Quantidade")
+        self.__tree.heading("unit_value", text="Valor Unitário")
+        self.__tree.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
 
         # Preenchendo a tabela com dados
         self.update_table()
 
         # Botões de ação
-        self.button_add = tk.Button(root, text="Adicionar Produto", command=self.add_product)
-        self.button_add.pack(side=tk.LEFT, padx=20, pady=10)
+        self.__button_add = tk.Button(root, text="Adicionar Produto", command=self.add_product)
+        self.__button_add.pack(side=tk.LEFT, padx=20, pady=10)
 
-        self.button_edit = tk.Button(root, text="Editar Produto", command=self.edit_product)
-        self.button_edit.pack(side=tk.LEFT, padx=20, pady=10)
+        self.__button_edit = tk.Button(root, text="Editar Produto", command=self.edit_product)
+        self.__button_edit.pack(side=tk.LEFT, padx=20, pady=10)
 
-        self.button_remove = tk.Button(root, text="Remover Produto", command=self.remove_product)
-        self.button_remove.pack(side=tk.LEFT, padx=20, pady=10)
+        self.__button_remove = tk.Button(root, text="Remover Produto", command=self.remove_product)
+        self.__button_remove.pack(side=tk.LEFT, padx=20, pady=10)
 
     def update_table(self):
         """
         Atualiza a tabela com os dados dos produtos.
         """
+        # Carregar tabela a partir do banco de dados
+        query = '''SELECT * FROM Stock'''
+        self.__cursor.execute(query)
+        result = self.__cursor.fetchall()
+        
         # Limpando itens existentes na tabela
-        for item in self.tree.get_children():
-            self.tree.delete(item)
+        for item in self.__tree.get_children():
+            self.__tree.delete(item)
 
         # Preenchendo a tabela com os dados da lista de produtos
-        for product in self.products:
-            self.tree.insert("", "end", values=(product["Nome"], product["Código"], product["Quantidade"], product["Valor Unitário"]))
+        for product in result:
+            self.__tree.insert("", "end", values=(product[1], product[2], product[5], product[3]))
 
     def add_product(self):
         """
         Adiciona um novo produto à lista.
         """
-        name = simpledialog.askstring("Adicionar Produto", "Digite o nome do produto:", parent=self.root)
-        code = simpledialog.askstring("Adicionar Produto", "Digite o código do produto:", parent=self.root)
-        quantity = simpledialog.askinteger("Adicionar Produto", "Digite a quantidade do produto:", parent=self.root)
-        unit_price = simpledialog.askfloat("Adicionar Produto", "Digite o valor unitário do produto:", parent=self.root)
+        name = simpledialog.askstring("Adicionar Produto", "Digite o nome do produto:", parent=self.__root)
+        code = simpledialog.askstring("Adicionar Produto", "Digite o código do produto:", parent=self.__root)
+        quantity = simpledialog.askinteger("Adicionar Produto", "Digite a quantidade do produto:", parent=self.__root)
+        value = simpledialog.askfloat("Adicionar Produto", "Digite o valor unitário do produto:", parent=self.__root)
+        validity = simpledialog.askstring("Adicionar Produto", "Digite a validade, caso não tenha, deixe em branco: ", parent=self.__root)
 
-        new_product = {"Nome": name, "Código": code, "Quantidade": quantity, "Valor Unitário": unit_price}
-        self.products.append(new_product)
+        new_product = Product(name, code, value, validity, quantity)
+        self.__user.add_product(self.__conn, new_product)
         self.update_table()  # Atualiza a tabela após adicionar um novo produto
         messagebox.showinfo("Painel de Estoque", "Produto adicionado com sucesso!")
 
@@ -85,32 +107,10 @@ class StockPanel:
         """
         Edita o produto selecionado na tabela.
         """
-        selected_item = self.tree.selection()
-        if selected_item:
-            selected_product_index = int(self.tree.index(selected_item))
-            selected_product = self.products[selected_product_index]
-
-            name = simpledialog.askstring("Editar Produto", "Digite o novo nome do produto:", initialvalue=selected_product["Nome"], parent=self.root)
-            code = simpledialog.askstring("Editar Produto", "Digite o novo código do produto:", initialvalue=selected_product["Código"], parent=self.root)
-            quantity = simpledialog.askinteger("Editar Produto", "Digite a nova quantidade do produto:", initialvalue=selected_product["Quantidade"], parent=self.root)
-            unit_price = simpledialog.askfloat("Editar Produto", "Digite o novo valor unitário do produto:", initialvalue=selected_product["Valor Unitário"], parent=self.root)
-
-            edited_product = {"Nome": name, "Código": code, "Quantidade": quantity, "Valor Unitário": unit_price}
-            self.products[selected_product_index] = edited_product
-            self.update_table()  # Atualiza a tabela após editar um produto
-            messagebox.showinfo("Painel de Estoque", "Produto editado com sucesso!")
-        else:
-            messagebox.showwarning("Painel de Estoque", "Selecione um produto para editar.")
+        # TODO Adicionar funcionalidade para edição de produto
 
     def remove_product(self):
         """
         Remove o produto selecionado na tabela.
         """
-        selected_item = self.tree.selection()
-        if selected_item:
-            selected_product_index = int(self.tree.index(selected_item))
-            del self.products[selected_product_index]
-            self.update_table()  # Atualiza a tabela após remover um produto
-            messagebox.showinfo("Painel de Estoque", "Produto removido com sucesso!")
-        else:
-            messagebox.showwarning("Painel de Estoque", "Selecione um produto para remover.")
+        # TODO Adicionar funcionalidade para remoção de produto do estoque
