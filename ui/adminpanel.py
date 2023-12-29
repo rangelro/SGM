@@ -53,12 +53,16 @@ class AdminPanel:
 
         self.button_disable = tk.Button(root, text="Desativar Usuário", command=self.disable_user)
         self.button_disable.pack(side=tk.LEFT, padx=20, pady=10)
+        
+        self.button_enable = tk.Button(root, text="Ativar Usuário", command=self.enable_user)
+        self.button_enable.pack(side=tk.LEFT, padx=20, pady=10)
     
     # Preencher lista de usuarios
     def update_users(self):
         # Buscar todos os usuários do banco de dados
         result = self.__user.all_users()
         self.__list_users.clear() # Limpar lista de usuário do painel para evitar duplicatas
+        self.__listbox_users.delete(0, 'end') # Limpar listbox
         
         for user in result:
             self.__list_users.append(user) # Adicionar usuário a lista
@@ -105,22 +109,22 @@ class AdminPanel:
         """
         selected_index = self.__listbox_users.curselection()
         if selected_index:
-            selected_user = self.__lista_users[selected_index[0]]
-            if self.__user.disable_user(id):
-                self.__listbox_users.insert(tk.CURRENT,f"{username} - desativado")
-            messagebox.showinfo("Admin Panel", f"Usuário '{selected_user}' desativado com sucesso!")
+            selected_user = self.__list_users[selected_index[0]]
+            self.__user.disable_user(selected_user[0])
+            self.update_users()
+            messagebox.showinfo("Admin Panel", f"Usuário '{selected_user[1]}' desativado com sucesso!")
         else:
             messagebox.showwarning("Admin Panel", "Selecione um usuário para desativar.")
 
-    def active_user(self):
+    def enable_user(self):
         """
         Ativa o usuário selecionado na lista.
         """
         selected_index = self.__listbox_users.curselection()
         if selected_index:
-            selected_user = self.__lista_users[selected_index[0]]
-            del self.__lista_users[selected_index[0]]
-            self.__listbox_users.delete(selected_index)
-            messagebox.showinfo("Admin Panel", f"Usuário '{selected_user}'ativado com sucesso!")
+            selected_user = self.__list_users[selected_index[0]]
+            self.__user.active_user(selected_user[0])
+            self.update_users()
+            messagebox.showinfo("Admin Panel", f"Usuário '{selected_user}' ativado com sucesso!")
         else:
             messagebox.showwarning("Admin Panel", "Selecione um usuário para ativar.")
