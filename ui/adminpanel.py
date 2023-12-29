@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 from data.admin import Admin
-
+from data.stockist import Stockist
+from data.user import User
 
 class AdminPanel:
     """
@@ -23,7 +24,7 @@ class AdminPanel:
         Parâmetros:
             root (Tk): A janela principal da aplicação.
         """
-        #Definindo variaveis de usuário
+        # Definindo variavel de usuário
         self.__user = user
 
         self.__root = root
@@ -33,18 +34,14 @@ class AdminPanel:
         self.__label_title = tk.Label(root, text="Lista de Usuários", font=("Helvetica", 24))
         self.__label_title.pack(pady=20)
 
-        #Definindo lista de usuario
-        self.__lista_users = []
+        # Definindo lista de usuario
+        self.__list_users = []
         
-
-       
-
         # Exibindo a lista de usuários
         self.__listbox_users = tk.Listbox(root)
-        for user in self.__lista_users:
-            self.__listbox_users.insert(tk.END, user)
         self.__listbox_users.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)  # Ocupa toda a largura com margens de 20px
-        #Atualizar lista de usuarios
+        
+        # Atualizar lista de usuarios
         self.update_users()
 
         # Botões de ação
@@ -57,15 +54,15 @@ class AdminPanel:
         self.button_disable = tk.Button(root, text="Desativar Usuário", command=self.disable_user)
         self.button_disable.pack(side=tk.LEFT, padx=20, pady=10)
     
-    #Preencher lista de usuarios
+    # Preencher lista de usuarios
     def update_users(self):
-        result =self.__user.all_users()
-        self.__lista_users.clear()
+        # Buscar todos os usuários do banco de dados
+        result = self.__user.all_users()
+        self.__list_users.clear() # Limpar lista de usuário do painel para evitar duplicatas
+        
         for user in result:
-            if user[3] == "Admin":
-                new_user = Admin(user[1])
-            self.__lista_users.append(new_user)
-            self.__listbox_users.insert(tk.END, user[1])
+            self.__list_users.append(user) # Adicionar usuário a lista
+            self.__listbox_users.insert(tk.END, f"{user[1]} - {user[3]} | {'Ativo' if user[4] != 0 else 'Desativado'}") # Adicionar no listbox
 
     def add_user(self):
         """
@@ -74,8 +71,9 @@ class AdminPanel:
         username=simpledialog.askstring("Adicionar usuario","Digite o nome do usuário: ",parent=self.__root)
         password=simpledialog.askstring("Adicionar usuario","Digite a senha do usuário: ",parent=self.__root)
         user_type=simpledialog.askstring("Adicionar usuario","Qual o cargo do usuário (Admin, Cashier, Stockist): ",parent=self.__root)
-        if self.__user.add_user(username,password,user_type):
-            self.__listbox_users.insert(tk.END, username)
+        
+        if self.__user.add_user(username, password, user_type):
+            self.update_users() # Atualiza lista após adicionar
         else:
             messagebox.showerror("Adicionar usuario","Usuário já existe no sistema.")
         
@@ -84,24 +82,21 @@ class AdminPanel:
         """
         Edita o usuário selecionado na lista.
         """
-        
         selected_index = self.__listbox_users.curselection()
         if selected_index:
-            #Seleciona o usuário que está sendo buscado
-            selected_user = self.__lista_users[selected_index[0]]
-            #Info
-            name = simpledialog.askstring("Editar Usuario", "Digite o novo nome do usuario:", initialvalue=self.__lista_users["Nome"], parent=self.__root)
-            password = simpledialog.askstring("Editar Usuario", "Digite a nova senha do usuario:", initialvalue=["Nome"], parent=self.__root)
-            user_type=simpledialog.askstring("Editar usuario","Qual o novo cargo do usuário (Admin, Cashier, Stockist): ",parent=self.__root)
-
-            if self.__user.edit_user(id,name,password,user_type):
-                self.__listbox_users.insert(tk.CURRENT,name)
-            else:
-                messagebox.showerror("Editar Usuario","Usuario inexistente.")
+            # Identifica qual usuário está selecionado na lista
+            selected_user = self.__list_users[selected_index[0]]
             
-            messagebox.showinfo("Editar Usuario", f"Usuário '{selected_user}' editado com sucesso.")
+            if selected_user:
+                name = simpledialog.askstring("Editar Usuario", "Digite o novo nome do usuario:", initialvalue=selected_user[1], parent=self.__root)
+                password = simpledialog.askstring("Editar Usuario", "Digite a nova senha do usuario:", initialvalue=selected_user[2], parent=self.__root)
+                user_type = simpledialog.askstring("Editar usuario","Qual o novo cargo do usuário (Admin, Cashier, Stockist): ",initialvalue=selected_user[3], parent=self.__root)
+
+                self.__user.edit_user(selected_user[0], name, password, user_type)
+                self.update_users() # Atualiza lista
+                messagebox.showinfo("Editar Usuario", f"Usuário '{selected_user[1]}' editado com sucesso.")
         else:
-            messagebox.showwarning("Editar Usuario", "Usuario inválido.")
+            messagebox.showwarning("Editar Usuario", "Não há nenhum usuário selecionado no momento, por gentileza selecionar um usuário.")
     
 
     def disable_user(self):

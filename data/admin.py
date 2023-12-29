@@ -82,7 +82,7 @@ class Admin(User, LogMixin):
         result = self.__cursor.fetchone()
         return result[0] > 0
     
-    def edit_user(self,id,username, password, user_type):
+    def edit_user(self, id, username, password, user_type):
         """
         Edita as informações de um usuário no banco de dados.
 
@@ -91,13 +91,10 @@ class Admin(User, LogMixin):
         - username (str): Novo nome de usuário.
         - password (str): Nova senha do usuário.
         - user_type (str): Novo tipo de usuário.
-
-        Returns:
-        - None
         """
         #Efetua a função UPDATE no banco de dados com as edições feitas no User
         query = '''UPDATE Users SET username=?,password=?,user_type=? WHERE id=?'''
-        self.__cursor.execute(query,(username,password,user_type,id))
+        self.__cursor.execute(query, (username, password, user_type, id))
         self.__connection.commit()
         
         # Adiciona ação ao log

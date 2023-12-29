@@ -4,3 +4,6 @@ Arquivo de log criado!
 12/28/2023 | 14:16:09 - rangel: Adicionado novo usu√°rio(rangel) ao banco de dados.
 12/28/2023 | 19:23:08 - rangel: Adicionado novo usu√°rio(rangel) ao banco de dados.
 12/28/2023 | 19:27:29 - rangel: Adicionado novo usu√°rio(teste) ao banco de dados.
+12/28/2023 | 20:45:20 - rangel: Adicionado novo usu·rio(eudivan) ao banco de dados.
+12/28/2023 | 21:02:32 - rangel: Usu·rio(1) foi modificado.
+12/28/2023 | 21:03:56 - rangel: Usu·rio(1) foi modificado.
